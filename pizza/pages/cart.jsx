@@ -5,15 +5,30 @@ import { useEffect, useState } from "react";
 import { PayPalScriptProvider, PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 import axios from "axios";
 import { reset } from "../redux/cartSlice";
+import { useRouter } from "next/router";
+import OrderDetail from "../components/OrderDetail";
 
 const Cart = () => {
   const cart = useSelector((state) => state.cart);
   const [open, setOpen] = useState(false);
-
+  const [cash, setCash] = useState(false);
   const amount = cart.total;
   const currency = "USD";
   const style = { layout: "vertical" };
   const dispatch = useDispatch();
+  const router = useRouter();
+
+  const createOrder = async (data) => {
+    try {
+      const res = await axios.post("http://localhost:3000/api/orders", data);
+      if (res.status === 201) {
+        dispatch(reset());
+        router.push(`/orders/${res.data._id}`);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   // Custom component to wrap the PayPalButtons and handle currency changes
   const ButtonWrapper = ({ currency, showSpinner }) => {
@@ -137,7 +152,7 @@ const Cart = () => {
               </button>
               <PayPalScriptProvider
                 options={{
-                  "client-id": "test",
+                  "client-id": "AWKbUOnLUMITsPFoxn2T1Qe-QKRvU_dd8ec7kCNqKLNe0fbked8vY9AP-a2r8-uulTofOrIMn3Ie2tIc",
                   components: "buttons",
                   currency: "USD",
                   "disable-funding": "credit,card,p24",
@@ -153,6 +168,7 @@ const Cart = () => {
           )}
         </div>
       </div>
+      {cash && <OrderDetail createOrder={createOrder} total={cart.total} />}
     </div>
   );
 };

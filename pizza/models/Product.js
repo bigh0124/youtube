@@ -14,7 +14,7 @@ const productSchema = new mongoose.Schema(
     },
     img: {
       type: String,
-      required: true,
+      default: "/img/pizza.png",
     },
     prices: {
       type: [Number],
