@@ -1,0 +1,17 @@
+.login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  span {
+    color: red;
+    font-weight: bold;
+  }
+}
